@@ -5,7 +5,8 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     // API Configuration
-    const API_BASE_URL = 'https://mindmetrics-ai-b07k.onrender.com';
+    const API_BASE_URL = "https://mindmetrics-ai-b07k.onrender.com";
+
     const PREDICT_ENDPOINT = `${API_BASE_URL}/predict`;
 
     // DOM Element References
