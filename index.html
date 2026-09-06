@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindMetrics AI - Student Mental Health Score Predictor</title>
+    <meta name="description" content="AI-powered regression analysis predicting student mental health score based on digital habits, lifestyle, and academic balance.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CSS Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Ambient Background Glow Orbs -->
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+    <div class="ambient-glow glow-3"></div>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <header class="hero-section">
+            <div class="badge">
+                <i class="fa-solid fa-brain"></i> Machine Learning Powered
+            </div>
+            <h1>Predict Student <span>Mental Health Score</span></h1>
+            <p class="subtitle">Estimate a continuous mental health score using lifestyle, academic habits, digital behavior and social media usage.</p>
+            <p class="hero-subtext"><i class="fa-solid fa-chart-line"></i> AI-powered regression analysis based on student behavioral patterns.</p>
+        </header>
+
+        <!-- Global API Error Banner -->
+        <div id="apiErrorBanner" class="api-error-banner hidden" role="alert">
+            <i class="fa-solid fa-circle-exclamation error-icon"></i>
+            <div class="error-content">
+                <h4 id="apiErrorTitle">Unable to Connect to Server</h4>
+                <p id="apiErrorMessage">Please make sure the FastAPI backend is running on <code class="code-badge">http://127.0.0.1:8000</code> and try again.</p>
+            </div>
+            <button id="closeErrorBtn" class="error-close-btn" aria-label="Dismiss error"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <!-- Main Assessment Form Card -->
+        <main class="main-card" id="formCard">
+            <form id="predictionForm" novalidate>
+                
+                <!-- Section 1: Demographics -->
+                <section class="form-section">
+                    <div class="section-title">
+                        <div class="icon-box"><i class="fa-solid fa-user-graduate"></i></div>
+                        <div>
+                            <h2>Demographic Profile</h2>
+                            <p class="section-desc">Basic student demographic details and educational level.</p>
+                        </div>
+                    </div>
+                    <div class="grid-layout cols-2">
+                        <!-- Age -->
+                        <div class="input-group">
+                            <label for="age"><i class="fa-solid fa-cake-candles"></i> Age <span class="range-hint">(10 - 100)</span></label>
+                            <input type="number" id="age" name="age" min="10" max="100" placeholder="e.g., 21" required aria-describedby="ageError">
+                            <span class="error-msg" id="ageError"><i class="fa-solid fa-triangle-exclamation"></i> Age must be between 10 and 100</span>
+                        </div>
+
+                        <!-- Gender -->
+                        <div class="input-group">
+                            <label for="gender"><i class="fa-solid fa-venus-mars"></i> Gender</label>
+                            <div class="select-wrapper">
+                                <select id="gender" name="gender" required aria-describedby="genderError">
+                                    <option value="" disabled selected>Select Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                            <span class="error-msg" id="genderError"><i class="fa-solid fa-triangle-exclamation"></i> Please select gender</span>
+                        </div>
+
+                        <!-- Country -->
+                        <div class="input-group">
+                            <label for="country"><i class="fa-solid fa-globe"></i> Country</label>
+                            <div class="select-wrapper">
+                                <select id="country" name="country" required aria-describedby="countryError">
+                                    <option value="" disabled selected>Select Country</option>
+                                    <option value="India">India</option>
+                                    <option value="USA">USA</option>
+                                    <option value="Canada">Canada</option>
+                                    <option value="Australia">Australia</option>
+                                    <option value="UK">UK</option>
+                                    <option value="Germany">Germany</option>
+                                    <option value="Mexico">Mexico</option>
+                                    <option value="Turkey">Turkey</option>
+                                    <option value="France">France</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <span class="error-msg" id="countryError"><i class="fa-solid fa-triangle-exclamation"></i> Please select country</span>
+                        </div>
+
+                        <!-- Academic Level -->
+                        <div class="input-group">
+                            <label for="academic_level"><i class="fa-solid fa-graduation-cap"></i> Academic Level</label>
+                            <div class="select-wrapper">
+                                <select id="academic_level" name="academic_level" required aria-describedby="academicLevelError">
+                                    <option value="" disabled selected>Select Academic Level</option>
+                                    <option value="High School">High School</option>
+                                    <option value="Undergraduate">Undergraduate</option>
+                                    <option value="Graduate">Graduate</option>
+                                </select>
+                            </div>
+                            <span class="error-msg" id="academicLevelError"><i class="fa-solid fa-triangle-exclamation"></i> Please select academic level</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 2: Digital & Social Media Habits -->
+                <section class="form-section">
+                    <div class="section-title">
+                        <div class="icon-box"><i class="fa-solid fa-mobile-screen-button"></i></div>
+                        <div>
+                            <h2>Digital & Social Habits</h2>
+                            <p class="section-desc">Social platform exposure, primary usage intent, and daily unlocks.</p>
+                        </div>
+                    </div>
+                    <div class="grid-layout cols-2">
+                        <!-- Most Used Platform -->
+                        <div class="input-group">
+                            <label for="most_used_platform"><i class="fa-solid fa-hashtag"></i> Most Used Social Platform</label>
+                            <div class="select-wrapper">
+                                <select id="most_used_platform" name="most_used_platform" required aria-describedby="platformError">
+                                    <option value="" disabled selected>Select Platform</option>
+                                    <option value="Instagram">Instagram</option>
+                                    <option value="YouTube">YouTube</option>
+                                    <option value="TikTok">TikTok</option>
+                                    <option value="Snapchat">Snapchat</option>
+                                    <option value="Facebook">Facebook</option>
+                                    <option value="LinkedIn">LinkedIn</option>
+                                    <option value="Twitter">Twitter</option>
+                                    <option value="WhatsApp">WhatsApp</option>
+                                    <option value="WeChat">WeChat</option>
+                                    <option value="LINE">LINE</option>
+                                    <option value="KakaoTalk">KakaoTalk</option>
+                                    <option value="VKontakte">VKontakte</option>
+                                </select>
+                            </div>
+                            <span class="error-msg" id="platformError"><i class="fa-solid fa-triangle-exclamation"></i> Please select platform</span>
+                        </div>
+
+                        <!-- Purpose of Use -->
+                        <div class="input-group">
+                            <label for="purpose_of_use"><i class="fa-solid fa-bullseye"></i> Primary Purpose of Use</label>
+                            <div class="select-wrapper">
+                                <select id="purpose_of_use" name="purpose_of_use" required aria-describedby="purposeError">
+                                    <option value="" disabled selected>Select Purpose</option>
+                                    <option value="Education">Education</option>
+                                    <option value="Networking">Networking</option>
+                                    <option value="Entertainment">Entertainment</option>
+                                    <option value="News">News</option>
+                                </select>
+                            </div>
+                            <span class="error-msg" id="purposeError"><i class="fa-solid fa-triangle-exclamation"></i> Please select purpose</span>
+                        </div>
+
+                        <!-- Avg Daily Usage Hours -->
+                        <div class="input-group">
+                            <label for="avg_daily_usage_hours"><i class="fa-solid fa-clock"></i> Daily Screen Time <span class="range-hint">(Hours: 0 - 24)</span></label>
+                            <input type="number" id="avg_daily_usage_hours" name="avg_daily_usage_hours" step="0.1" min="0" max="24" placeholder="e.g., 4.5" required aria-describedby="usageError">
+                            <span class="error-msg" id="usageError"><i class="fa-solid fa-triangle-exclamation"></i> Screen time must be between 0 and 24 hours</span>
+                        </div>
+
+                        <!-- Daily Unlocks -->
+                        <div class="input-group">
+                            <label for="daily_unlocks"><i class="fa-solid fa-lock-open"></i> Daily Phone Unlocks <span class="range-hint">(Min 0)</span></label>
+                            <input type="number" id="daily_unlocks" name="daily_unlocks" min="0" placeholder="e.g., 80" required aria-describedby="unlocksError">
+                            <span class="error-msg" id="unlocksError"><i class="fa-solid fa-triangle-exclamation"></i> Daily unlocks must be 0 or greater</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 3: Academic & Lifestyle Balance -->
+                <section class="form-section">
+                    <div class="section-title">
+                        <div class="icon-box"><i class="fa-solid fa-heart-pulse"></i></div>
+                        <div>
+                            <h2>Academic & Lifestyle Balance</h2>
+                            <p class="section-desc">Study dedication, rest quality, exercise frequency, and stress perception.</p>
+                        </div>
+                    </div>
+                    <div class="grid-layout cols-2">
+                        <!-- Study Hours -->
+                        <div class="input-group">
+                            <label for="study_hours"><i class="fa-solid fa-book-open"></i> Daily Study Hours <span class="range-hint">(0 - 24)</span></label>
+                            <input type="number" id="study_hours" name="study_hours" step="0.1" min="0" max="24" placeholder="e.g., 5.0" required aria-describedby="studyError">
+                            <span class="error-msg" id="studyError"><i class="fa-solid fa-triangle-exclamation"></i> Study hours must be between 0 and 24</span>
+                        </div>
+
+                        <!-- Physical Activity Hours -->
+                        <div class="input-group">
+                            <label for="physical_activity_hours"><i class="fa-solid fa-person-running"></i> Daily Physical Activity <span class="range-hint">(Hours: 0 - 24)</span></label>
+                            <input type="number" id="physical_activity_hours" name="physical_activity_hours" step="0.1" min="0" max="24" placeholder="e.g., 1.0" required aria-describedby="activityError">
+                            <span class="error-msg" id="activityError"><i class="fa-solid fa-triangle-exclamation"></i> Physical activity must be between 0 and 24</span>
+                        </div>
+
+                        <!-- Sleep Hours Per Night -->
+                        <div class="input-group">
+                            <label for="sleep_hours_per_night"><i class="fa-solid fa-bed"></i> Sleep Hours / Night <span class="range-hint">(0 - 24)</span></label>
+                            <input type="number" id="sleep_hours_per_night" name="sleep_hours_per_night" step="0.1" min="0" max="24" placeholder="e.g., 7.5" required aria-describedby="sleepError">
+                            <span class="error-msg" id="sleepError"><i class="fa-solid fa-triangle-exclamation"></i> Sleep hours must be between 0 and 24</span>
+                        </div>
+
+                        <!-- Stress Level -->
+                        <div class="input-group">
+                            <label for="stress_level"><i class="fa-solid fa-gauge-high"></i> Self-Perceived Stress Level</label>
+                            <div class="select-wrapper">
+                                <select id="stress_level" name="stress_level" required aria-describedby="stressError">
+                                    <option value="" disabled selected>Select Stress Level</option>
+                                    <option value="Low">Low</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="High">High</option>
+                                    <option value="Very High">Very High</option>
+                                </select>
+                            </div>
+                            <span class="error-msg" id="stressError"><i class="fa-solid fa-triangle-exclamation"></i> Please select stress level</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Submit & Reset Action Buttons -->
+                <div class="form-actions">
+                    <button type="submit" id="submitBtn" class="btn-primary">
+                        <span class="btn-text">Predict Mental Health Score</span>
+                        <i class="fa-solid fa-wand-magic-sparkles btn-icon"></i>
+                    </button>
+                    <button type="button" id="resetFormBtn" class="btn-reset">
+                        <i class="fa-solid fa-rotate-left"></i> Reset Form
+                    </button>
+                </div>
+            </form>
+        </main>
+
+        <!-- Loading Overlay / Card State -->
+        <div id="loadingCard" class="glass-card loading-card hidden" aria-live="polite">
+            <div class="spinner-wrapper">
+                <div class="spinner"></div>
+                <i class="fa-solid fa-brain spinner-icon"></i>
+            </div>
+            <h3 id="loadingText">Analyzing Student Data...</h3>
+            <p>Processing behavioral factors through the machine learning model.</p>
+        </div>
+
+        <!-- Hero Prediction Result Card Container -->
+        <div id="resultCard" class="glass-card result-card hidden">
+            <div class="result-header">
+                <div class="result-badge"><i class="fa-solid fa-chart-pie"></i> Analysis Complete</div>
+                <h3 class="result-hero-title">YOUR AI PREDICTION</h3>
+            </div>
+            
+            <div class="hero-score-box">
+                <div class="score-ring">
+                    <svg viewBox="0 0 140 140" class="gauge-svg">
+                        <circle cx="70" cy="70" r="60" class="gauge-bg"></circle>
+                        <circle cx="70" cy="70" r="60" class="gauge-fill" id="gaugeCircle"></circle>
+                    </svg>
+                    <div class="score-number-container">
+                        <span id="scoreValue" class="score-value">0.00</span>
+                        <span class="score-max">/ 10</span>
+                    </div>
+                </div>
+
+                <div class="score-details">
+                    <span class="score-tagline">Estimated Mental Health Score</span>
+                    <p id="scoreDescription" class="score-description">Continuous prediction generated based on submitted behavioral metrics.</p>
+                </div>
+            </div>
+
+            <!-- Detailed Input Summary Grid -->
+            <div class="summary-section">
+                <h4 class="summary-title"><i class="fa-solid fa-list-check"></i> Submitted Input Summary</h4>
+                <div class="summary-grid" id="summaryGrid">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </div>
+
+            <!-- Prediction Insights / Model Context -->
+            <div class="insights-section">
+                <h4 class="insights-title"><i class="fa-solid fa-lightbulb"></i> Prediction Insights</h4>
+                <p class="insight-disclaimer-note">Prediction generated from the behavioral and lifestyle information provided.</p>
+                
+                <div class="insights-grid">
+                    <div class="insight-box">
+                        <i class="fa-solid fa-moon text-indigo"></i>
+                        <div>
+                            <h5>Sleep Rest</h5>
+                            <p id="sleepInsight">Evaluation based on reported sleep hours.</p>
+                        </div>
+                    </div>
+                    <div class="insight-box">
+                        <i class="fa-solid fa-person-running text-emerald"></i>
+                        <div>
+                            <h5>Physical Activity</h5>
+                            <p id="activityInsight">Assessment of exercise habits.</p>
+                        </div>
+                    </div>
+                    <div class="insight-box">
+                        <i class="fa-solid fa-mobile-screen text-purple"></i>
+                        <div>
+                            <h5>Screen Usage</h5>
+                            <p id="screenInsight">Daily digital engagement ratio.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-actions">
+                <button id="reassessBtn" class="btn-secondary">
+                    <i class="fa-solid fa-rotate-left"></i> Run Another Assessment
+                </button>
+            </div>
+        </div>
+
+        <!-- Model Information Card -->
+        <section class="glass-card info-card">
+            <div class="info-card-header">
+                <i class="fa-solid fa-circle-info info-icon"></i>
+                <h3>About MindMetrics AI</h3>
+            </div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Dataset</span>
+                    <span class="info-value">5,000 student records</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Problem Type</span>
+                    <span class="info-value">Regression</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Target Variable</span>
+                    <span class="info-value">Mental Health Score (~3 to 10)</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Model Features</span>
+                    <span class="info-value">Demographics, social media usage, academic & lifestyle habits</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Medical Disclaimer -->
+        <aside class="disclaimer-card">
+            <i class="fa-solid fa-shield-halved disclaimer-icon"></i>
+            <p><strong>Disclaimer:</strong> Educational / research use only. This prediction is an ML-based estimate and is not a medical diagnosis or substitute for professional mental health advice.</p>
+        </aside>
+
+        <!-- Footer -->
+        <footer>
+            <p>MindMetrics AI • Student Mental Health Score Predictor</p>
+        </footer>
+    </div>
+
+    <!-- JavaScript Script -->
+    <script src="script.js"></script>
+</body>
+</html>
