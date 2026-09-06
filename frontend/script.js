@@ -5,7 +5,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     // API Configuration
-    const API_BASE_URL = 'http://127.0.0.1:8000';
+    const API_BASE_URL = 'https://mindmetrics-ai-b07k.onrender.com';
     const PREDICT_ENDPOINT = `${API_BASE_URL}/predict`;
 
     // DOM Element References
@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
     /**
      * Form Submission Handler
      */
-    form.addEventListener('submit', async (e) => {
+    form.addEventListener('submit', async(e) => {
         e.preventDefault();
         hideErrorBanner();
 
@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const data = await response.json();
-            
+
             if (typeof data.predicted_mental_health_score !== 'number') {
                 throw new Error("Invalid response format: 'predicted_mental_health_score' missing.");
             }
@@ -297,7 +297,7 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     function resetFormState() {
         form.reset();
-        inputs.forEach(input => input.closest('.input-group')?.classList.remove('invalid'));
+        inputs.forEach(input => input.closest('.input-group') ? .classList.remove('invalid'));
         hideLoadingState();
         hideErrorBanner();
         resultCard.classList.add('hidden');
