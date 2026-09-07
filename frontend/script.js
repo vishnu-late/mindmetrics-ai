@@ -1,6 +1,6 @@
 /**
  * MindMetrics AI - Student Mental Health Frontend Logic
- * Interacts with FastAPI backend endpoint: POST http://127.0.0.1:8000/predict
+ * let userFriendlyMsg = "Unable to connect to the prediction server. Please check that the FastAPI backend is online and try again.";
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("FastAPI Backend Error:", error);
             hideLoadingState();
 
-            let userFriendlyMsg = "Unable to connect to the prediction server. Please make sure the FastAPI backend is running on http://127.0.0.1:8000 and try again.";
+            let userFriendlyMsg = "Unable to connect to the prediction server. Please check that the FastAPI backend is online and try again.";
             if (error.message && !error.message.includes('Failed to fetch') && !error.message.includes('NetworkError')) {
                 userFriendlyMsg = `Server error encountered: ${error.message}`;
             }
@@ -298,7 +298,13 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     function resetFormState() {
         form.reset();
-        inputs.forEach(input => input.closest('.input-group') ? .classList.remove('invalid'));
+        inputs.forEach(input => {
+            const group = input.closest('.input-group');
+
+            if (group) {
+                group.classList.remove('invalid');
+            }
+        });
         hideLoadingState();
         hideErrorBanner();
         resultCard.classList.add('hidden');
